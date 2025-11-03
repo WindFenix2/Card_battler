@@ -1422,6 +1422,7 @@ MonoBehaviour:
   maxMana: 12
   playerMana: 0
   startingCardsAmount: 5
+  cardsToDrawPerTurn: 2
   currentPhase: 0
 --- !u!4 &852270689
 Transform:
