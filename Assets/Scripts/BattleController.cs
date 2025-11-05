@@ -24,16 +24,27 @@ public class BattleController : MonoBehaviour
     public Transform discardPoint;
 
     public int playerHealth, enemyHealth;
-   
+
+    private readonly Queue<int> playerPopupQueue = new Queue<int>();
+    private readonly Queue<int> enemyPopupQueue = new Queue<int>();
+    private bool playerPopupRunning, enemyPopupRunning;
+
+    [SerializeField] private float damagePopupDelay = 0.5f;
+    private WaitForSeconds popupGap;
+
 
     private void Start()
     {
+        popupGap = new WaitForSeconds(damagePopupDelay);
         //playerMana = startingMana;
         //UIController.instance.SetPlayerManaText(playerMana);
         currentPlayerMaxMana = startingMana;
         FillPlayerMana();
 
         DeckController.instance.DrawMultipleCards(startingCardsAmount);
+
+        UIController.instance.SetPlayerHealthText(playerHealth);
+        UIController.instance.SetEnemyHealthText(enemyHealth);
     }
 
     private void Update()
@@ -138,6 +149,11 @@ public class BattleController : MonoBehaviour
 
                 //End battle
             }
+
+            UIController.instance.SetPlayerHealthText(playerHealth);
+
+            playerPopupQueue.Enqueue(damageAmount);
+            if (!playerPopupRunning) StartCoroutine(PlayerPopupWorker());
         }
     }
 
@@ -153,6 +169,50 @@ public class BattleController : MonoBehaviour
 
                 //End battle
             }
+
+            UIController.instance.SetEnemyHealthText(enemyHealth);
+
+            enemyPopupQueue.Enqueue(damageAmount);
+            if (!enemyPopupRunning) StartCoroutine(EnemyPopupWorker());
         }
     }
+
+    private IEnumerator PlayerPopupWorker()
+    {
+        playerPopupRunning = true;
+        while (playerPopupQueue.Count > 0)
+        {
+            int amount = playerPopupQueue.Dequeue();
+            SpawnPlayerPopup(amount);
+            yield return popupGap;
+        }
+        playerPopupRunning = false;
+    }
+
+    private IEnumerator EnemyPopupWorker()
+    {
+        enemyPopupRunning = true;
+        while (enemyPopupQueue.Count > 0)
+        {
+            int amount = enemyPopupQueue.Dequeue();
+            SpawnEnemyPopup(amount);
+            yield return popupGap;
+        }
+        enemyPopupRunning = false;
+    }
+
+    private void SpawnPlayerPopup(int amount)
+    {
+        var damageClone = Instantiate(UIController.instance.playerDamage, UIController.instance.playerDamage.transform.parent);
+        damageClone.damageText.text = amount.ToString();
+        damageClone.gameObject.SetActive(true);
+    }
+
+    private void SpawnEnemyPopup(int amount)
+    {
+        var damageClone = Instantiate(UIController.instance.enemyDamage, UIController.instance.enemyDamage.transform.parent);
+        damageClone.damageText.text = amount.ToString();
+        damageClone.gameObject.SetActive(true);
+    }
+
 }
