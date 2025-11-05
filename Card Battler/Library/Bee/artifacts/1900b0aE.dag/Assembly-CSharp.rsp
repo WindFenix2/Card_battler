@@ -357,6 +357,7 @@
 "Assets/Scripts/BattleController.cs"
 "Assets/Scripts/Card.cs"
 "Assets/Scripts/CardPlacePoint.cs"
+"Assets/Scripts/CardPointController.cs"
 "Assets/Scripts/CardScriptableObject.cs"
 "Assets/Scripts/DeckController.cs"
 "Assets/Scripts/HandController.cs"

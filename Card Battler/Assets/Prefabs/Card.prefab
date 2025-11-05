@@ -454,6 +454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardSO: {fileID: 11400000, guid: bdd6706d34f50b347a5b7aba2efcbe49, type: 2}
+  isPlayer: 1
   currentHealth: 4
   attackPower: 6
   manaCost: 4
@@ -476,6 +477,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   assignedPlace: {fileID: 0}
+  anim: {fileID: 4705650126014268969}
 --- !u!65 &1954971900945377256
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -752,6 +754,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5434214301448133887}
+  - component: {fileID: 4705650126014268969}
   m_Layer: 0
   m_Name: Model Holder
   m_TagString: Untagged
@@ -776,6 +779,27 @@ Transform:
   - {fileID: 6335863435947477045}
   m_Father: {fileID: 4442960027048329165}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &4705650126014268969
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831061361463885616}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3f540326326855747aeb815e31a47237, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2191113238928140735
 GameObject:
   m_ObjectHideFlags: 0

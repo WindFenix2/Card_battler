@@ -21,6 +21,11 @@ public class BattleController : MonoBehaviour
     public enum TurnOrder { playerActive, playerCardAttacks, enemyActive, enemyCardAttacks }
     public TurnOrder currentPhase;
 
+    public Transform discardPoint;
+
+    public int playerHealth, enemyHealth;
+   
+
     private void Start()
     {
         //playerMana = startingMana;
@@ -87,8 +92,10 @@ public class BattleController : MonoBehaviour
 
             case TurnOrder.playerCardAttacks:
 
-                Debug.Log("skipping player card attacks");
-                AdvanceTurn();
+                //Debug.Log("skipping player card attacks");
+                //AdvanceTurn();
+
+                CardPointController.instance.PlayerAttack();
 
                 break;
 
@@ -101,8 +108,10 @@ public class BattleController : MonoBehaviour
 
             case TurnOrder.enemyCardAttacks:
 
-                Debug.Log("skipping enemy card attacks");
-                AdvanceTurn();
+                //Debug.Log("skipping enemy card attacks");
+                //AdvanceTurn();
+
+                CardPointController.instance.EnemyAttack();
 
                 break;
 
@@ -115,5 +124,35 @@ public class BattleController : MonoBehaviour
         UIController.instance.drawCardButton.SetActive(false);
 
         AdvanceTurn ();
+    }
+
+    public void DamagePlayer(int damageAmount)
+    {
+        if(playerHealth > 0)
+        {
+            playerHealth -= damageAmount;
+
+            if(playerHealth <= 0)
+            {
+                playerHealth = 0;
+
+                //End battle
+            }
+        }
+    }
+
+    public void DamageEnemy(int damageAmount)
+    {
+        if (enemyHealth > 0)
+        {
+            enemyHealth -= damageAmount;
+
+            if (enemyHealth <= 0)
+            {
+                enemyHealth = 0;
+
+                //End battle
+            }
+        }
     }
 }
