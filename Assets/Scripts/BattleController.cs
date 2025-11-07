@@ -25,6 +25,10 @@ public class BattleController : MonoBehaviour
 
     public int playerHealth, enemyHealth;
 
+    public bool battleEnded;
+
+    public float resultScreenDelayTime = 1f;
+
 
     private void Start()
     {
@@ -89,65 +93,68 @@ public class BattleController : MonoBehaviour
 
     public void AdvanceTurn()
     {
-        currentPhase++;
-
-        if ((int)currentPhase >= System.Enum.GetValues(typeof(TurnOrder)).Length)
+        if (battleEnded == false)
         {
-            currentPhase = 0;
-        }
+            currentPhase++;
 
-        switch (currentPhase)
-        {
-            case TurnOrder.playerActive:
+            if ((int)currentPhase >= System.Enum.GetValues(typeof(TurnOrder)).Length)
+            {
+                currentPhase = 0;
+            }
 
-                UIController.instance.endTurnButton.SetActive(true);
-                UIController.instance.drawCardButton.SetActive(true);
+            switch (currentPhase)
+            {
+                case TurnOrder.playerActive:
 
-                if (currentPlayerMaxMana < maxMana)
-                {
-                    currentPlayerMaxMana++;
-                }
+                    UIController.instance.endTurnButton.SetActive(true);
+                    UIController.instance.drawCardButton.SetActive(true);
 
-                FillPlayerMana();
+                    if (currentPlayerMaxMana < maxMana)
+                    {
+                        currentPlayerMaxMana++;
+                    }
 
-                DeckController.instance.DrawMultipleCards(cardsToDrawPerTurn);
+                    FillPlayerMana();
 
-                break;
+                    DeckController.instance.DrawMultipleCards(cardsToDrawPerTurn);
 
-            case TurnOrder.playerCardAttacks:
+                    break;
 
-                //Debug.Log("skipping player card attacks");
-                //AdvanceTurn();
+                case TurnOrder.playerCardAttacks:
 
-                CardPointController.instance.PlayerAttack();
+                    //Debug.Log("skipping player card attacks");
+                    //AdvanceTurn();
 
-                break;
+                    CardPointController.instance.PlayerAttack();
 
-            case TurnOrder.enemyActive:
+                    break;
 
-                //Debug.Log("skipping enemy actions");
-                //AdvanceTurn();
+                case TurnOrder.enemyActive:
 
-                if (currentEnemyMaxMana < maxMana)
-                {
-                    currentEnemyMaxMana++;
-                }
+                    //Debug.Log("skipping enemy actions");
+                    //AdvanceTurn();
 
-                FillEnemyMana();
+                    if (currentEnemyMaxMana < maxMana)
+                    {
+                        currentEnemyMaxMana++;
+                    }
 
-                EnemyController.instance.StartAction();
+                    FillEnemyMana();
 
-                break;
+                    EnemyController.instance.StartAction();
 
-            case TurnOrder.enemyCardAttacks:
+                    break;
 
-                //Debug.Log("skipping enemy card attacks");
-                //AdvanceTurn();
+                case TurnOrder.enemyCardAttacks:
 
-                CardPointController.instance.EnemyAttack();
+                    //Debug.Log("skipping enemy card attacks");
+                    //AdvanceTurn();
 
-                break;
+                    CardPointController.instance.EnemyAttack();
 
+                    break;
+
+            }
         }
     }
 
@@ -161,7 +168,7 @@ public class BattleController : MonoBehaviour
 
     public void DamagePlayer(int damageAmount)
     {
-        if (playerHealth > 0)
+        if (playerHealth > 0 || battleEnded == false)
         {
             playerHealth -= damageAmount;
 
@@ -169,7 +176,7 @@ public class BattleController : MonoBehaviour
             {
                 playerHealth = 0;
 
-                //End battle
+                EndBattle();
             }
 
             UIController.instance.SetPlayerHealthText(playerHealth);
@@ -182,7 +189,7 @@ public class BattleController : MonoBehaviour
 
     public void DamageEnemy(int damageAmount)
     {
-        if (enemyHealth > 0)
+        if (enemyHealth > 0 || battleEnded == false)
         {
             enemyHealth -= damageAmount;
 
@@ -190,7 +197,7 @@ public class BattleController : MonoBehaviour
             {
                 enemyHealth = 0;
 
-                //End battle
+                EndBattle();
             }
 
             UIController.instance.SetEnemyHealthText(enemyHealth);
@@ -199,5 +206,46 @@ public class BattleController : MonoBehaviour
             damageClone.damageText.text = damageAmount.ToString();
             damageClone.gameObject.SetActive(true);
         }
+    }
+
+    void EndBattle()
+    {
+        battleEnded = true;
+
+        HandController.instance.EmptyHand();
+
+        if(enemyHealth <= 0)
+        {
+            UIController.instance.battleResultText.text = "YOU WON!";
+
+            foreach(CardPlacePoint point in CardPointController.instance.enemyCardPoints)
+            {
+                if(point.activeCard != null)
+                {
+                    point.activeCard.MoveToPoint(discardPoint.position, point.activeCard.transform.rotation);
+                }
+            }
+        }
+        else
+        {
+            UIController.instance.battleResultText.text = "YOU LOST!";
+
+            foreach (CardPlacePoint point in CardPointController.instance.playerCardPoints)
+            {
+                if (point.activeCard != null)
+                {
+                    point.activeCard.MoveToPoint(discardPoint.position, point.activeCard.transform.rotation);
+                }
+            }
+        }
+
+        StartCoroutine(ShowResultCo());
+    }
+
+    IEnumerator ShowResultCo()
+    {
+        yield return new WaitForSeconds(resultScreenDelayTime);
+
+        UIController.instance.battleEndScreen.SetActive(true);
     }
 }

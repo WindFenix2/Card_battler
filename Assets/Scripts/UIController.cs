@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
@@ -13,7 +11,7 @@ public class UIController : MonoBehaviour
     }
 
     public TMP_Text playerManaText, playerHealthText, enemyHealthText, enemyManaText;
-     
+
     public GameObject manaWarning;
     public float manaWarningTime;
     private float manaWarningCounter;
@@ -22,13 +20,16 @@ public class UIController : MonoBehaviour
 
     public UIDamageIndicator playerDamage, enemyDamage;
 
+    public GameObject battleEndScreen;
+    public TMP_Text battleResultText;
+
     void Update()
     {
-        if(manaWarningCounter > 0 )
+        if (manaWarningCounter > 0)
         {
             manaWarningCounter -= Time.deltaTime;
 
-            if(manaWarningCounter < 0 )
+            if (manaWarningCounter < 0)
             {
                 manaWarning.SetActive(false);
             }
@@ -61,13 +62,28 @@ public class UIController : MonoBehaviour
         manaWarningCounter = manaWarningTime;
     }
 
-    public void DrawCard ()
+    public void DrawCard()
     {
         DeckController.instance.DrawCardForMana();
     }
 
-    public void EndPlayerTurn ()
+    public void EndPlayerTurn()
     {
         BattleController.instance.EndPlayerTurn();
+    }
+
+    public void MainMenu()
+    {
+
+    }
+
+    public void RestartLevel()
+    {
+
+    }
+
+    public void ChooseNewBattle()
+    {
+
     }
 }
