@@ -12,8 +12,8 @@ public class BattleController : MonoBehaviour
     }
 
     public int startingMana = 4, maxMana = 12;
-    public int playerMana;
-    private int currentPlayerMaxMana;
+    public int playerMana, enemyMana;
+    private int currentPlayerMaxMana, currentEnemyMaxMana;
 
     public int startingCardsAmount = 5;
     public int cardsToDrawPerTurn = 2;
@@ -25,31 +25,27 @@ public class BattleController : MonoBehaviour
 
     public int playerHealth, enemyHealth;
 
-    private readonly Queue<int> playerPopupQueue = new Queue<int>();
-    private readonly Queue<int> enemyPopupQueue = new Queue<int>();
-    private bool playerPopupRunning, enemyPopupRunning;
-
-    [SerializeField] private float damagePopupDelay = 0.5f;
-    private WaitForSeconds popupGap;
-
 
     private void Start()
     {
-        popupGap = new WaitForSeconds(damagePopupDelay);
         //playerMana = startingMana;
         //UIController.instance.SetPlayerManaText(playerMana);
         currentPlayerMaxMana = startingMana;
         FillPlayerMana();
 
+        currentEnemyMaxMana = startingMana;
+        FillEnemyMana();
+
         DeckController.instance.DrawMultipleCards(startingCardsAmount);
 
         UIController.instance.SetPlayerHealthText(playerHealth);
         UIController.instance.SetEnemyHealthText(enemyHealth);
+
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             AdvanceTurn();
         }
@@ -57,7 +53,7 @@ public class BattleController : MonoBehaviour
 
     public void SpendPlayerMana(int amountToSpend)
     {
-        playerMana = playerMana - amountToSpend;
+        playerMana -= amountToSpend;
 
         if (playerMana < 0)
         {
@@ -67,20 +63,37 @@ public class BattleController : MonoBehaviour
         UIController.instance.SetPlayerManaText(playerMana);
     }
 
-    public void FillPlayerMana ()
+    public void FillPlayerMana()
     {
-        //playerMana = startingMana;
         playerMana = currentPlayerMaxMana;
         UIController.instance.SetPlayerManaText(playerMana);
     }
 
-    public void AdvanceTurn ()
+    public void SpendEnemyMana(int amountToSpend)
+    {
+        enemyMana -= amountToSpend;
+
+        if (enemyMana < 0)
+        {
+            enemyMana = 0;
+        }
+
+        UIController.instance.SetEnemyManaText(enemyMana);
+    }
+
+    public void FillEnemyMana()
+    {
+        enemyMana = currentEnemyMaxMana;
+        UIController.instance.SetEnemyManaText(enemyMana);
+    }
+
+    public void AdvanceTurn()
     {
         currentPhase++;
 
         if ((int)currentPhase >= System.Enum.GetValues(typeof(TurnOrder)).Length)
-        { 
-            currentPhase = 0; 
+        {
+            currentPhase = 0;
         }
 
         switch (currentPhase)
@@ -90,7 +103,7 @@ public class BattleController : MonoBehaviour
                 UIController.instance.endTurnButton.SetActive(true);
                 UIController.instance.drawCardButton.SetActive(true);
 
-                if(currentPlayerMaxMana < maxMana)
+                if (currentPlayerMaxMana < maxMana)
                 {
                     currentPlayerMaxMana++;
                 }
@@ -112,8 +125,17 @@ public class BattleController : MonoBehaviour
 
             case TurnOrder.enemyActive:
 
-                Debug.Log("skipping enemy actions");
-                AdvanceTurn();
+                //Debug.Log("skipping enemy actions");
+                //AdvanceTurn();
+
+                if (currentEnemyMaxMana < maxMana)
+                {
+                    currentEnemyMaxMana++;
+                }
+
+                FillEnemyMana();
+
+                EnemyController.instance.StartAction();
 
                 break;
 
@@ -129,21 +151,21 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    public void EndPlayerTurn ()
+    public void EndPlayerTurn()
     {
         UIController.instance.endTurnButton.SetActive(false);
         UIController.instance.drawCardButton.SetActive(false);
 
-        AdvanceTurn ();
+        AdvanceTurn();
     }
 
     public void DamagePlayer(int damageAmount)
     {
-        if(playerHealth > 0)
+        if (playerHealth > 0)
         {
             playerHealth -= damageAmount;
 
-            if(playerHealth <= 0)
+            if (playerHealth <= 0)
             {
                 playerHealth = 0;
 
@@ -152,8 +174,9 @@ public class BattleController : MonoBehaviour
 
             UIController.instance.SetPlayerHealthText(playerHealth);
 
-            playerPopupQueue.Enqueue(damageAmount);
-            if (!playerPopupRunning) StartCoroutine(PlayerPopupWorker());
+            UIDamageIndicator damageClone = Instantiate(UIController.instance.playerDamage, UIController.instance.playerDamage.transform.parent);
+            damageClone.damageText.text = damageAmount.ToString();
+            damageClone.gameObject.SetActive(true);
         }
     }
 
@@ -172,47 +195,9 @@ public class BattleController : MonoBehaviour
 
             UIController.instance.SetEnemyHealthText(enemyHealth);
 
-            enemyPopupQueue.Enqueue(damageAmount);
-            if (!enemyPopupRunning) StartCoroutine(EnemyPopupWorker());
+            UIDamageIndicator damageClone = Instantiate(UIController.instance.enemyDamage, UIController.instance.enemyDamage.transform.parent);
+            damageClone.damageText.text = damageAmount.ToString();
+            damageClone.gameObject.SetActive(true);
         }
     }
-
-    private IEnumerator PlayerPopupWorker()
-    {
-        playerPopupRunning = true;
-        while (playerPopupQueue.Count > 0)
-        {
-            int amount = playerPopupQueue.Dequeue();
-            SpawnPlayerPopup(amount);
-            yield return popupGap;
-        }
-        playerPopupRunning = false;
-    }
-
-    private IEnumerator EnemyPopupWorker()
-    {
-        enemyPopupRunning = true;
-        while (enemyPopupQueue.Count > 0)
-        {
-            int amount = enemyPopupQueue.Dequeue();
-            SpawnEnemyPopup(amount);
-            yield return popupGap;
-        }
-        enemyPopupRunning = false;
-    }
-
-    private void SpawnPlayerPopup(int amount)
-    {
-        var damageClone = Instantiate(UIController.instance.playerDamage, UIController.instance.playerDamage.transform.parent);
-        damageClone.damageText.text = amount.ToString();
-        damageClone.gameObject.SetActive(true);
-    }
-
-    private void SpawnEnemyPopup(int amount)
-    {
-        var damageClone = Instantiate(UIController.instance.enemyDamage, UIController.instance.enemyDamage.transform.parent);
-        damageClone.damageText.text = amount.ToString();
-        damageClone.gameObject.SetActive(true);
-    }
-
 }
