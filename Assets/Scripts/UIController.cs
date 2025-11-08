@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -23,6 +24,10 @@ public class UIController : MonoBehaviour
     public GameObject battleEndScreen;
     public TMP_Text battleResultText;
 
+    public string mainMenuScene, battleSelectScene;
+
+    public GameObject pauseScreen;
+
     void Update()
     {
         if (manaWarningCounter > 0)
@@ -33,6 +38,11 @@ public class UIController : MonoBehaviour
             {
                 manaWarning.SetActive(false);
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseUnpause();
         }
     }
 
@@ -74,16 +84,38 @@ public class UIController : MonoBehaviour
 
     public void MainMenu()
     {
+        SceneManager.LoadScene(mainMenuScene);
 
+        Time.timeScale = 1f;
     }
 
     public void RestartLevel()
     {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
+        Time.timeScale = 1f;
     }
 
     public void ChooseNewBattle()
     {
+        SceneManager.LoadScene(battleSelectScene);
 
+        Time.timeScale = 1f;
+    }
+
+    public void PauseUnpause()
+    {
+        if(pauseScreen.activeSelf == false)
+        {
+            pauseScreen.SetActive(true);
+
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            pauseScreen.SetActive(false);
+
+            Time.timeScale = 1f;
+        }
     }
 }
