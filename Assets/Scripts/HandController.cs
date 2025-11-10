@@ -11,7 +11,7 @@ public class HandController : MonoBehaviour
         instance = this;
     }
 
-    public List <Card> heldCards = new List<Card>();
+    public List<Card> heldCards = new List<Card>();
 
     public Transform minPos, maxPos;
     public List<Vector3> cardPositions = new List<Vector3>();
@@ -21,12 +21,12 @@ public class HandController : MonoBehaviour
         SetCardPositionInHand();
     }
 
-    public void SetCardPositionInHand ()
+    public void SetCardPositionInHand()
     {
         cardPositions.Clear();
 
         Vector3 distanceBetweenPoints = Vector3.zero;
-        if(heldCards.Count > 1)
+        if (heldCards.Count > 1)
         {
             distanceBetweenPoints = (maxPos.position - minPos.position) / (heldCards.Count - 1);
         }
@@ -50,9 +50,10 @@ public class HandController : MonoBehaviour
         if (heldCards[cardToRemove.handPosition] == cardToRemove)
         {
             heldCards.RemoveAt(cardToRemove.handPosition);
-        } else
+        }
+        else
         {
-            Debug.LogError("Card at position " +  cardToRemove.handPosition + " is not the card being removed from hand.");
+            Debug.LogError("Card at position " + cardToRemove.handPosition + " is not the card being removed from hand.");
         }
 
         SetCardPositionInHand();
@@ -66,7 +67,7 @@ public class HandController : MonoBehaviour
 
     public void EmptyHand()
     {
-        foreach(Card heldCard in heldCards)
+        foreach (Card heldCard in heldCards)
         {
             heldCard.inHand = false;
             heldCard.MoveToPoint(BattleController.instance.discardPoint.position, heldCard.transform.rotation);

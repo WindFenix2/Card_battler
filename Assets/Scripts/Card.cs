@@ -108,6 +108,8 @@ public class Card : MonoBehaviour
                             theHC.RemoveCardFromHand(this);
 
                             BattleController.instance.SpendPlayerMana(manaCost);
+
+                            AudioManager.instance.PlaySFX(4);
                         }
                         else
                         {
@@ -188,9 +190,15 @@ public class Card : MonoBehaviour
             anim.SetTrigger("Jump");
 
             Destroy(gameObject, 5f);
+
+            AudioManager.instance.PlaySFX(2);
+        } 
+        else
+        {
+            AudioManager.instance.PlaySFX(1);
         }
 
-        anim.SetTrigger("Hurt");
+            anim.SetTrigger("Hurt");
 
         UpdateCardDisplay();
     }
