@@ -77,9 +77,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckToUse:
+  - {fileID: 11400000, guid: 0ec31c60c05f122459d79dae8f1674a4, type: 2}
+  - {fileID: 11400000, guid: 9f8b03d4ccc87ad4595e73d5d3c9a730, type: 2}
+  - {fileID: 11400000, guid: 0d0a0525ee46c80468c96db3cfe6d894, type: 2}
+  - {fileID: 11400000, guid: 7944f3e1a7145ed46a77067d9add459b, type: 2}
+  - {fileID: 11400000, guid: 13fc011f4e4058d4da8cfa82be2d60eb, type: 2}
+  - {fileID: 11400000, guid: a474de9ec395cee478d5f30da32489e5, type: 2}
+  - {fileID: 11400000, guid: b098c5bc1f898344f883d428c5e6f551, type: 2}
+  - {fileID: 11400000, guid: 4bc2b834d409b574baec414f0ebaf903, type: 2}
   - {fileID: 11400000, guid: bdd6706d34f50b347a5b7aba2efcbe49, type: 2}
+  - {fileID: 11400000, guid: 88f431c6739ba484d8960b4b80a9b47c, type: 2}
+  - {fileID: 11400000, guid: ea03979b6969c8746b728c0702446fde, type: 2}
+  - {fileID: 11400000, guid: 1afa0fed109847f4d94ef802226fcc1d, type: 2}
+  - {fileID: 11400000, guid: 38dc3f944fa9e5c4b801d9c98d993d31, type: 2}
+  - {fileID: 11400000, guid: e60c526b595a3574e91879f97b4ed949, type: 2}
+  - {fileID: 11400000, guid: 6aaf51c6e54080a478c25791e3bc11c8, type: 2}
   - {fileID: 11400000, guid: 5222f8eb21639c94fa233c4ea8f9f9c9, type: 2}
+  - {fileID: 11400000, guid: 8573bc382ae7409438b1880da77a81c0, type: 2}
+  - {fileID: 11400000, guid: aa695d56ddadb6247b949080c4fe7928, type: 2}
+  - {fileID: 11400000, guid: 29da4106270d63b429ecd1c12d9acc76, type: 2}
+  - {fileID: 11400000, guid: 89542af1efa956e48b8cc6066e82f25b, type: 2}
+  - {fileID: 11400000, guid: 39a5fb7dcd8da4d458cd12b696bc1529, type: 2}
+  - {fileID: 11400000, guid: 8e31b6afd53b54a42ae37b37333c48cb, type: 2}
   - {fileID: 11400000, guid: ed1ccd39fc1cc314a84979d08592a810, type: 2}
+  - {fileID: 11400000, guid: 38cd12e683d609b4c8a56c81a23fa05c, type: 2}
+  - {fileID: 11400000, guid: 5afebdd9d7ed18c47befc5c36ab27837, type: 2}
+  - {fileID: 11400000, guid: d8886b15239055743ac8f741b0026410, type: 2}
+  - {fileID: 11400000, guid: 6ebdfc5dafd40a248b8951f07e11bfa5, type: 2}
+  - {fileID: 11400000, guid: 2d6eeb12dfcbc1c4bab47e9a0a751b4d, type: 2}
+  - {fileID: 11400000, guid: a916a57790d62e74d8baa8e83b8a3cc0, type: 2}
+  - {fileID: 11400000, guid: 280c4e603c92d1a4582a2aebff0c4d69, type: 2}
   cardToSpawn: {fileID: 5376332197065928941, guid: 463ff43823176b54fada60d129942256,
     type: 3}
   cardSpawnPoint: {fileID: 2591799831785842251}
