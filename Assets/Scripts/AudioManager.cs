@@ -28,18 +28,20 @@ public class AudioManager : MonoBehaviour
 
     public AudioSource[] sfx;
 
+    private bool suspendedByFocus = false;
+
     private void Update()
     {
-        if(playingBGM)
+        if (!playingBGM || suspendedByFocus) return;
+
+        if (!bgm[currentBGM].isPlaying)
         {
-            if (bgm[currentBGM].isPlaying == false)
+            if (bgm[currentBGM].time > 0f)
             {
                 currentBGM++;
-                if(currentBGM >= bgm.Length)
-                {
-                    currentBGM = 0;
-                }
+                if (currentBGM >= bgm.Length) currentBGM = 0;
 
+                bgm[currentBGM].time = 0f;
                 bgm[currentBGM].Play();
             }
         }
@@ -75,9 +77,8 @@ public class AudioManager : MonoBehaviour
     public void PlayBGM()
     {
         StopMusic();
-
         currentBGM = Random.Range(0, bgm.Length);
-
+        bgm[currentBGM].time = 0f;
         bgm[currentBGM].Play();
         playingBGM = true;
     }
@@ -86,5 +87,40 @@ public class AudioManager : MonoBehaviour
     {
         sfx[sfxToPlay].Stop();
         sfx[sfxToPlay].Play();
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        suspendedByFocus = pause;
+        if (pause)
+        {
+            if (playingBGM && bgm[currentBGM].isPlaying) bgm[currentBGM].Pause();
+            if (menuMusic.isPlaying) menuMusic.Pause();
+            if (battleSelectMusic.isPlaying) battleSelectMusic.Pause();
+        }
+        else
+        {
+            if (playingBGM && !bgm[currentBGM].isPlaying && bgm[currentBGM].time > 0f) bgm[currentBGM].UnPause();
+            if (!menuMusic.isPlaying && menuMusic.time > 0f) menuMusic.UnPause();
+            if (!battleSelectMusic.isPlaying && battleSelectMusic.time > 0f) battleSelectMusic.UnPause();
+        }
+    }
+
+    // Just in case, some platforms send this instead of Pause.
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        suspendedByFocus = !hasFocus;
+        if (!hasFocus)
+        {
+            if (playingBGM && bgm[currentBGM].isPlaying) bgm[currentBGM].Pause();
+            if (menuMusic.isPlaying) menuMusic.Pause();
+            if (battleSelectMusic.isPlaying) battleSelectMusic.Pause();
+        }
+        else
+        {
+            if (playingBGM && !bgm[currentBGM].isPlaying && bgm[currentBGM].time > 0f) bgm[currentBGM].UnPause();
+            if (!menuMusic.isPlaying && menuMusic.time > 0f) menuMusic.UnPause();
+            if (!battleSelectMusic.isPlaying && battleSelectMusic.time > 0f) battleSelectMusic.UnPause();
+        }
     }
 }
