@@ -8,7 +8,7 @@ public class AMLoader : MonoBehaviour
 
     private void Awake()
     {
-        if (FindObjectOfType<AudioManager>() == null)
+        if (Object.FindFirstObjectByType<AudioManager>() == null)
         {
             AudioManager.instance = Instantiate(theAM);
             DontDestroyOnLoad(AudioManager.instance.gameObject);

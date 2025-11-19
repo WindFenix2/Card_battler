@@ -46,7 +46,7 @@ public class Card : MonoBehaviour
 
         SetupCard();
 
-        theHC = FindObjectOfType<HandController>();
+        theHC = Object.FindFirstObjectByType<HandController>();
         theCol = GetComponent<Collider>();
     }
 
